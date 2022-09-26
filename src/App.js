@@ -12,7 +12,7 @@ import NavBar from './NavBar';//importing components (same for next two lines)
 import Home from './Home';
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';//importing features that create routes for different pages/components
 
-function App() {//JSX calls components
+function App() {//return function renders components to the DOM
    
   return (
     <Router>
