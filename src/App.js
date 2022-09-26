@@ -8,9 +8,8 @@
         Author: Zack Andrews//
 */
 
-import NavBar from './NavBar';//importing components (same for next two lines)
-import Home from './Home';
-import Account from './Account';
+import NavBar from './components/NavBar';//importing components (same for next two lines)
+import Home from './components/Home';
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';//importing features that create routes for different pages/components
 
 function App() {//JSX calls components
@@ -18,11 +17,10 @@ function App() {//JSX calls components
   return (
     <Router>
       <div className="App">
-        {/*<NavBar/>*/}
+        {<NavBar/>}
         <div className="content">
           <Routes>
             <Route exact path = "/" element = {<Home/>}></Route>
-            <Route path = "/Accounts/:userID" element = {<Account/>}></Route>
           </Routes>
         </div>
       </div>
