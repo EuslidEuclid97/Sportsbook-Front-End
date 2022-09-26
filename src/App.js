@@ -10,7 +10,6 @@
 
 import NavBar from './NavBar';//importing components (same for next two lines)
 import Home from './Home';
-import Account from './Account';
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';//importing features that create routes for different pages/components
 
 function App() {//JSX calls components
@@ -22,7 +21,7 @@ function App() {//JSX calls components
         <div className="content">
           <Routes>
             <Route exact path = "/" element = {<Home/>}></Route>
-            <Route path = "/Accounts/:userID" element = {<Account/>}></Route>
+{/*<Route path = "/Accounts/:userID" element = {<Account/>}></Route>*/}
           </Routes>
         </div>
       </div>
