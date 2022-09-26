@@ -8,8 +8,8 @@
         Author: Zack Andrews//
 */
 
-import NavBar from './NavBar';//importing components (same for next two lines)
-import Home from './Home';
+import NavBar from './components/NavBar';//importing components (same for next two lines)
+import Home from './components/Home';
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';//importing features that create routes for different pages/components
 
 function App() {//return function renders components to the DOM
@@ -21,7 +21,6 @@ function App() {//return function renders components to the DOM
         <div className="content">
           <Routes>
             <Route exact path = "/" element = {<Home/>}></Route>
-{/*<Route path = "/Accounts/:userID" element = {<Account/>}></Route>*/}
           </Routes>
         </div>
       </div>
