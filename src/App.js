@@ -17,7 +17,7 @@ function App() {//JSX calls components
   return (
     <Router>
       <div className="App">
-        {<NavBar/>}
+        {/*<NavBar/>*/}
         <div className="content">
           <Routes>
             <Route exact path = "/" element = {<Home/>}></Route>
