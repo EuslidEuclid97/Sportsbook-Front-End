@@ -66,10 +66,13 @@ const Home = () => {
                 };
                 const createResult = await createUser(newUser, localAdminToken);
                 const token = await getCreateToken(newEmail, newPassword, localAdminToken);
+                if(createResult && token)
+                {
+                    setIsPending(false)
+                    history('/landing');
+                }
                 //store user and token in redux
                 //navigate to next page
-                history('/landing');
-                setIsPending(false)
             }
             setIsPending(false)
         } catch (e) {
