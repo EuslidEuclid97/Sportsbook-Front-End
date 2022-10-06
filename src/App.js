@@ -21,6 +21,7 @@ function App() {//return function renders components to the DOM
         <div className="content">
           <Routes>
             <Route exact path = "/" element = {<Home/>}></Route>
+            <Route exact path = "/landing" element = {<NavBar/>}></Route>
           </Routes>
         </div>
       </div>
