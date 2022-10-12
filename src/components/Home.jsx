@@ -12,7 +12,6 @@
 import { useEffect, useState } from "react";//importing hooks for managing states
 import { useNavigate } from "react-router-dom";//hook for redirecting to another page upon successful sign in
 import { getCreateToken, getUser, createUser } from "../services/userService";
-import { hashPassword } from "../utils/hashPassword";
 
 const Home = () => {
     const[password, setPassword] = useState('')/*this line and the next three lines are setting password
@@ -47,9 +46,8 @@ const Home = () => {
         try {
             const localAdminToken = process.env.REACT_APP_ADMIN_TOKEN;
             const user = await getUser(email, localAdminToken);
-            const hashedPassword = await hashPassword(password);
-            if(user?.password === hashedPassword) {
-                const token = await getCreateToken(email, hashedPassword, localAdminToken);
+            if(user?.password === password) {
+                const token = await getCreateToken(email, password, localAdminToken);
                 //store user in redux and token
                 token && history('/landing');
             } else {
@@ -73,15 +71,14 @@ const Home = () => {
             if(user) {
                 alert('User is already in use, please sign in or choose a different email');
             } else {
-                const hashedPassword = await hashPassword(newPassword);
                 const newUser = {
                     firstname: newFirstName,
                     lastname: newLastName,
                     email: newEmail,
-                    password: hashedPassword
+                    password: newPassword
                 };
                 const createResult = await createUser(newUser, localAdminToken);
-                const token = await getCreateToken(newEmail, hashedPassword, localAdminToken);
+                const token = await getCreateToken(newEmail, newPassword, localAdminToken);
                 if(createResult && token)
                 {
                     setIsPending(false);
