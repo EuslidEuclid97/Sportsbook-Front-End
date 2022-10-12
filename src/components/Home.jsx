@@ -8,6 +8,12 @@
         Revision: Hid navbar from home page, added  title to home page, took extra sign in/sign up fields
         off home page
         Author: Zack Andrews
+    Date of revision: 10/6/2022
+        Revision: Adjusted the signup to make the correct service calls and redirect to a blank screen
+        Author: Sam Weise
+    Date of revision: 10/11/2022
+        Revision: Adjusted the sign in to make the correct service calls and redirect to a blank screen
+        Author: Sam Weise
 */
 import { useEffect, useState } from "react";//importing hooks for managing states
 import { useNavigate } from "react-router-dom";//hook for redirecting to another page upon successful sign in
@@ -44,16 +50,23 @@ const Home = () => {
         e.preventDefault();//...so that we can use this function to stay on current page
         setIsPending(true);//set state to true so user can't submit twice really fast (this triggers temporary button deactivation)
         try {
+            //Grabs the admin token from the environment
             const localAdminToken = process.env.REACT_APP_ADMIN_TOKEN;
+            //Gets the user with the email given in signup
             const user = await getUser(email, localAdminToken);
+            //Validates the correct password for the user
             if(user?.password === password) {
+                //Grabs the corresponding token for that user
                 const token = await getCreateToken(email, password, localAdminToken);
-                //store user in redux and token
+                /*Will Store user and token in redux here*/
+                //if the token exist redirect to the landing page
                 token && history('/landing');
             } else {
+                //Alert for incorrect credentials
                 alert("Incorrect Email or Password please try again!");
             }
         } catch (e) {
+            //All other errors get alerted to the screen
             alert(e.message);
         }
         setIsPending(false); //buttons are available again
@@ -66,28 +79,36 @@ const Home = () => {
         setIsPending(true); //set state to true so user can't submit twice really fast (this triggers temporary button deactivation)
         e.preventDefault(); //...so that we can use this function to stay on current page
         try {
+            //Grab the admin token from the environment
             const localAdminToken = process.env.REACT_APP_ADMIN_TOKEN;
+            //Checks to see if the user exists
             const user = await getUser(newEmail, localAdminToken);
             if(user) {
+                //If the user exist it prompts them to signup
                 alert('User is already in use, please sign in or choose a different email');
             } else {
+                //If they don't exist, craft a new user with the information given
                 const newUser = {
                     firstname: newFirstName,
                     lastname: newLastName,
                     email: newEmail,
                     password: newPassword
                 };
+                //Create the user 
                 const createResult = await createUser(newUser, localAdminToken);
+                //Create their token
                 const token = await getCreateToken(newEmail, newPassword, localAdminToken);
+                //If both calls are done succesfully redirect to landing page
                 if(createResult && token)
                 {
                     setIsPending(false);
+                    /*Will Store user and token in redux here*/
                     history('/landing');
                 }
-                //store user and token in redux
             }
             setIsPending(false); //buttons are available again
         } catch (e) {
+            //Prompt all other errors to the screen
             alert(e.message);
         }
     }
