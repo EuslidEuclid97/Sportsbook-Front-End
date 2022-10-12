@@ -10,8 +10,7 @@ export const getUser = async (email, token) => {
         });
         return Promise.resolve(result?.data);
     } catch (e) {
-        console.log(e.response);
-        return e.response.status === 404 ? Promise.resolve(undefined) : Promise.reject('hi');
+        return e.response.status === 404 ? Promise.resolve(undefined) : Promise.reject(e);
     }
 }
 
@@ -35,7 +34,6 @@ export const getCreateToken = async (email, password, token) => {
 export const createUser = async (user, token) => {
     try {
         const userServiceUrl = process.env.REACT_APP_BOOKIEBUDDY_SERVICE;
-        console.log(user);
         const result = await axios.post(`${userServiceUrl}func-create-user`,
             user
         , {

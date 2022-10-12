@@ -12,12 +12,13 @@
 import { useEffect, useState } from "react";//importing hooks for managing states
 import { useNavigate } from "react-router-dom";//hook for redirecting to another page upon successful sign in
 import { getCreateToken, getUser, createUser } from "../services/userService";
+import { hashPassword } from "../utils/hashPassword";
 
 const Home = () => {
     const[password, setPassword] = useState('')/*this line and the next three lines are setting password
                                                 and username states for sign in and sign up handlers
                                                 respectively *///
-    const[username, setUsername] = useState('')
+    const[email, setEmail] = useState('')
     const[newPassword, setNewPassword] = useState('')
     const[newEmail, setNewEmail] = useState('')
     const [newFirstName, setNewFirstName] = useState('');
@@ -40,43 +41,57 @@ const Home = () => {
     Postcondition: Will map form submission from sign in to actual credentials from db;
                     if match is found the user is redirected to another page ('Accounts' for now
                     but subject to change) */
-    const handleSignIn = (e) => {//event passed in...
+    const handleSignIn = async (e) => {//event passed in...
         e.preventDefault();//...so that we can use this function to stay on current page
-        setIsPending(true)//set state to true so user can't submit twice really fast (this triggers temporary button deactivation)
-        setIsPending(false)//buttons are available again
+        setIsPending(true);//set state to true so user can't submit twice really fast (this triggers temporary button deactivation)
+        try {
+            const localAdminToken = process.env.REACT_APP_ADMIN_TOKEN;
+            const user = await getUser(email, localAdminToken);
+            const hashedPassword = await hashPassword(password);
+            if(user?.password === hashedPassword) {
+                const token = await getCreateToken(email, hashedPassword, localAdminToken);
+                //store user in redux and token
+                token && history('/landing');
+            } else {
+                alert("Incorrect Email or Password please try again!");
+            }
+        } catch (e) {
+            alert(e.message);
+        }
+        setIsPending(false); //buttons are available again
 }
     /*Handler for sign in event
     Precondition: fires when user presses Sign Up button (takes in event)
     Postcondition: Same as handleSignIn, but if match is not found given credentials are placed in DB; if match is found a pop up appears
     */
     const handleSignUp = async (e) => {//much of this is the same as handleSignIn
-        setIsPending(true)
-        e.preventDefault();
+        setIsPending(true); //set state to true so user can't submit twice really fast (this triggers temporary button deactivation)
+        e.preventDefault(); //...so that we can use this function to stay on current page
         try {
             const localAdminToken = process.env.REACT_APP_ADMIN_TOKEN;
             const user = await getUser(newEmail, localAdminToken);
             if(user) {
                 alert('User is already in use, please sign in or choose a different email');
             } else {
+                const hashedPassword = await hashPassword(newPassword);
                 const newUser = {
                     firstname: newFirstName,
                     lastname: newLastName,
                     email: newEmail,
-                    password: newPassword
+                    password: hashedPassword
                 };
                 const createResult = await createUser(newUser, localAdminToken);
-                const token = await getCreateToken(newEmail, newPassword, localAdminToken);
+                const token = await getCreateToken(newEmail, hashedPassword, localAdminToken);
                 if(createResult && token)
                 {
-                    setIsPending(false)
+                    setIsPending(false);
                     history('/landing');
                 }
                 //store user and token in redux
-                //navigate to next page
             }
-            setIsPending(false)
+            setIsPending(false); //buttons are available again
         } catch (e) {
-            return Promise.reject(e);
+            alert(e.message);
         }
     }
 
@@ -86,7 +101,7 @@ const Home = () => {
             <div>
             <form onSubmit = {handleSignUp}>
                 <h2>Sign Up</h2>
-                <label>Username</label>
+                <label>Email</label>
                 <input 
                     type = "text"
                     required
@@ -121,12 +136,12 @@ const Home = () => {
             <div>
             <form onSubmit = {handleSignIn}>
                 <h2>Sign In</h2>
-                <label>Username</label>
+                <label>Email</label>
                 <input 
                     type = "text"
                     required
-                    value = {username}
-                    onChange = {(e) => setUsername(e.target.value)}
+                    value = {email}
+                    onChange = {(e) => setEmail(e.target.value)}
                 >
                 </input>
                 <label>Password</label>
