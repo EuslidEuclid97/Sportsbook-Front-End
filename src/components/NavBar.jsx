@@ -15,7 +15,7 @@ const NavBar = () => {//declaring component
             <div className="links">
                 <Link to="/">Home</Link>
                 <Link to="/Search">Search</Link>
-                <Link to="/Accounts/:username">Account</Link>
+                <Link to="/Profile">Account</Link>
             </div>
         </nav>
     );
