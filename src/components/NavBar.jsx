@@ -1,3 +1,4 @@
+
 /*
     File: NavBar.js
     Brief: NavBar component for access to different features to the site; links will redirect user once clicked
